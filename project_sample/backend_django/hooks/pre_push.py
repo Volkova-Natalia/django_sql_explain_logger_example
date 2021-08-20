@@ -29,7 +29,7 @@ echo "| log pre-push | end pip install -r requirements/local.txt"
 
 
 echo "| log pre-push | begin ./manage.py test"
-project_sample/backend_django/manage.py test
+./project_sample/backend_django/manage.py test
 RESULT_test=$?
 echo "| log pre-push | end ./manage.py test"
 
