@@ -53,12 +53,12 @@ class PeopleTestCase(TestCase):
         self.assertEquals(response.status_code, status.HTTP_200_OK, "6 status")
         self.assertEquals(response.data, people_in_db[id_created - 1], "6 data")
 
-        people = []
+        del people[id_created - 1]
         response = client.delete(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT, "7 status")
         self.assertEquals(response.data, None, "7 data")
-        people_in_db = []
+        del people_in_db[id_created - 1]
 
         response = client.get(path=self.base_url, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_200_OK, "8 status")
-        self.assertEquals(response.data, [], "8 data")
+        self.assertEquals(response.data, people_in_db, "8 data")
