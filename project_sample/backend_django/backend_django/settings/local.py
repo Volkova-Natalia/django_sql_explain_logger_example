@@ -121,9 +121,6 @@ if (is_logging):
 
 
     def filter_server(record):
-        print('\nRECORD')
-        for k, v in record.__dict__.items():
-            print(k, '=', v)
         if not hasattr(record, 'stack_patched'):
             if (
                     hasattr(record, 'request') and
