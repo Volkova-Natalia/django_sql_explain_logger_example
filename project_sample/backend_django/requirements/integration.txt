@@ -1,0 +1,3 @@
+#     CI build target, or for developer testing of side effects.
+
+-r base.txt
