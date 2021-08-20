@@ -11,25 +11,28 @@ echo "| log pre-push | start hook"
 git stash -q --keep-index
 
 
+cd project_sample/backend_django
+
+
 echo "| log pre-push | begin delete venv:"
-find project_sample/backend_django/venv/* -delete
+find venv/* -delete
 echo "| log pre-push | end delete venv"
 
 echo "| log pre-push | begin virtualenv venv"
-virtualenv project_sample/backend_django/venv
+virtualenv venv
 echo "| log pre-push | end virtualenv venv"
 
 echo "| log pre-push | begin source venv/Scripts/activate"
-source project_sample/backend_django/venv/Scripts/activate
+source venv/Scripts/activate
 echo "| log pre-push | end source venv/Scripts/activate"
 
 echo "| log pre-push | begin pip install -r requirements/local.txt"
-pip install -r project_sample/backend_django/requirements/local.txt
+pip install -r requirements/local.txt
 echo "| log pre-push | end pip install -r requirements/local.txt"
 
 
 echo "| log pre-push | begin ./manage.py test"
-./project_sample/backend_django/manage.py test
+./manage.py test
 RESULT_test=$?
 echo "| log pre-push | end ./manage.py test"
 
