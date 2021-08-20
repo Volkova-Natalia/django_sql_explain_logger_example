@@ -12,15 +12,15 @@ git stash -q --keep-index
 
 
 echo "| log pre-push | begin delete venv:"
-find venv/* -delete
+find project_sample/backend_django/venv/* -delete
 echo "| log pre-push | end delete venv"
 
 echo "| log pre-push | begin virtualenv venv"
-virtualenv venv
+virtualenv project_sample/backend_django/venv
 echo "| log pre-push | end virtualenv venv"
 
 echo "| log pre-push | begin source venv/Scripts/activate"
-source venv/Scripts/activate
+source project_sample/backend_django/venv/Scripts/activate
 echo "| log pre-push | end source venv/Scripts/activate"
 
 echo "| log pre-push | begin pip install -r requirements/local.txt"
