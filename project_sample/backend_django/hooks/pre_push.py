@@ -24,12 +24,12 @@ source project_sample/backend_django/venv/Scripts/activate
 echo "| log pre-push | end source venv/Scripts/activate"
 
 echo "| log pre-push | begin pip install -r requirements/local.txt"
-pip install -r requirements/local.txt
+pip install -r project_sample/backend_django/requirements/local.txt
 echo "| log pre-push | end pip install -r requirements/local.txt"
 
 
 echo "| log pre-push | begin ./manage.py test"
-./manage.py test
+project_sample/backend_django/manage.py test
 RESULT_test=$?
 echo "| log pre-push | end ./manage.py test"
 
