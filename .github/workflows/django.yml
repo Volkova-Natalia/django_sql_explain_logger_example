@@ -27,7 +27,8 @@ jobs:
         pip install -r project_sample/backend_django/requirements.txt
     - name: Run Tests
       run: |
-        python project_sample/backend_django/manage.py test
+        cd project_sample/backend_django
+        python manage.py test
       env:
         APPLICATION_ENVIRONMENT: ${{ secrets.APPLICATION_ENVIRONMENT }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
