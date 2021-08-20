@@ -39,25 +39,25 @@ class PeopleTestCase(TestCase):
 
         response = client.get(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_200_OK, "4 status")
-        self.assertEquals(response.data, people_in_db[id_created - 1], "4 data")
+        self.assertEquals(response.data, people_in_db[id_created-1], "4 data")
 
-        people[-1]['first_name'] += '_another'
-        people[-1]['last_name'] += '_another'
-        response = client.put(path=self.base_url + str(id_created) + '/', data=people[-1], content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        people[id_created-1]['first_name'] += '_another'
+        people[id_created-1]['last_name'] += '_another'
+        response = client.put(path=self.base_url + str(id_created) + '/', data=people[id_created-1], content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_200_OK, "5 status")
         self.assertEquals(response.data, None, "5 data")
-        people_in_db[-1]['first_name'] = people[-1]['first_name']
-        people_in_db[-1]['last_name'] = people[-1]['last_name']
+        people_in_db[id_created-1]['first_name'] = people[id_created-1]['first_name']
+        people_in_db[id_created-1]['last_name'] = people[id_created-1]['last_name']
 
         response = client.get(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_200_OK, "6 status")
-        self.assertEquals(response.data, people_in_db[id_created - 1], "6 data")
+        self.assertEquals(response.data, people_in_db[id_created-1], "6 data")
 
-        del people[id_created - 1]
+        del people[id_created-1]
         response = client.delete(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT, "7 status")
         self.assertEquals(response.data, None, "7 data")
-        del people_in_db[id_created - 1]
+        del people_in_db[id_created-1]
 
         response = client.get(path=self.base_url, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
         self.assertEquals(response.status_code, status.HTTP_200_OK, "8 status")
