@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.forms.models import model_to_dict
 
 
 class People(models.Model):
@@ -14,6 +15,11 @@ class People(models.Model):
         verbose_name='Last name',
         help_text='Last name of the person')
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['last_name'], name='idx_last_name')
+        ]
+
     # --------------------------------------------------
 
     def __str__(self):
@@ -21,5 +27,10 @@ class People(models.Model):
 
     def get_absolute_url(self):
         return reverse('sample' + ':' + 'person', args=[self.id])
+
+    # --------------------------------------------------
+
+    def to_dict(self, *, fields=None, exclude=None):
+        return model_to_dict(instance=self, fields=fields, exclude=exclude)
 
     # --------------------------------------------------

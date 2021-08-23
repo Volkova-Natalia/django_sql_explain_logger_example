@@ -80,7 +80,19 @@ class PeopleView(BaseView):
     # --------------------------------------------------
 
     def get(self, request, *args, **kwargs):
-        objects = self.model.objects.all()[:]
+        query_params = dict(request.query_params)
+        objects = self.model.objects
+        if 'first_name' in query_params:
+            if len(query_params['first_name']) == 1:
+                objects = objects.filter(first_name=query_params['first_name'][0])
+            else:
+                objects = objects.filter(first_name__in=query_params['first_name'])
+        if 'last_name' in query_params:
+            if len(query_params['last_name']) == 1:
+                objects = objects.filter(last_name=query_params['last_name'][0])
+            else:
+                objects = objects.filter(last_name__in=query_params['last_name'])
+        objects = objects.all()[:]
         serializer = self.get_serializer(objects, context={'request': request}, many=True)
         result = self.response_200(data=serializer.data)
 

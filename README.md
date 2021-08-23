@@ -30,15 +30,16 @@ by the standard django **manage.py test** command.
 You will see something like this:
 ```
 Execution Plan:
-EXPLAIN FORMAT=JSON SELECT `sample_people`.`id`, `sample_people`.`first_name`, `sample_people`.`last_name` FROM `sample_people`
+EXPLAIN FORMAT=JSON SELECT `sample_people`.`id`, `sample_people`.`first_name`, `sample_people`.`last_name` FROM `sample_people` WHERE `sample_people`.`first_name` = 'first_name_2'
 {
   "query_block": {
     "select_id": 1,
     "table": {
       "table_name": "sample_people",
       "access_type": "ALL",
-      "rows": 1,
-      "filtered": 100
+      "rows": 4,
+      "filtered": 100,
+      "attached_condition": "sample_people.first_name = 'first_name_2'"
     }
   }
 }
@@ -50,20 +51,21 @@ This log will be **red** because of **"access_type": "ALL"** - the worst case, y
 
 ```
 Execution Plan:
-EXPLAIN FORMAT=JSON SELECT `sample_people`.`id`, `sample_people`.`first_name`, `sample_people`.`last_name` FROM `sample_people` WHERE `sample_people`.`id` = 1 LIMIT 21
+EXPLAIN FORMAT=JSON SELECT `sample_people`.`id`, `sample_people`.`first_name`, `sample_people`.`last_name` FROM `sample_people` WHERE `sample_people`.`last_name` = 'last_name_2'
 {
   "query_block": {
     "select_id": 1,
     "table": {
       "table_name": "sample_people",
-      "access_type": "const",
-      "possible_keys": ["PRIMARY"],
-      "key": "PRIMARY",
-      "key_length": "8",
-      "used_key_parts": ["id"],
+      "access_type": "ref",
+      "possible_keys": ["idx_last_name"],
+      "key": "idx_last_name",
+      "key_length": "767",
+      "used_key_parts": ["last_name"],
       "ref": ["const"],
       "rows": 1,
-      "filtered": 100
+      "filtered": 100,
+      "index_condition": "sample_people.last_name = 'last_name_2'"
     }
   }
 }

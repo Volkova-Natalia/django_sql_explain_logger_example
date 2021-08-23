@@ -12,53 +12,100 @@ class PeopleTestCase(TestCase):
 
     # ======================================================================
 
+    def setUp(self):
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+
+    # ======================================================================
+
     @override_settings(DEBUG=True)
-    def test_integration(self):
+    def test(self):
         client = Client()
 
-        response = client.get(path=self.base_url, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_200_OK, "1 status")
-        self.assertEquals(response.data, [], "1 data")
+    # ----- Integration Test -----
 
-        people = []
-        people.append({
+        # GET People
+        response = client.get(path=self.base_url,
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_200_OK, '1 status')
+        self.assertEquals(response.data, [], '1 data')
+
+        # POST
+        data_person = {
             'first_name': 'first_name_0',
             'last_name': 'last_name_0',
-        })
-        people_in_db = []
-        id_created = 1
-        response = client.post(path=self.base_url, data=people[-1], content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED, "2 status")
-        self.assertEquals(response.data, {'id': id_created}, "2 data")
-        people_in_db.append(people[-1])
-        people_in_db[-1]['id'] = id_created
+        }
+        person_in_db = data_person.copy()
+        person_in_db['id'] = 1
+        response = client.post(path=self.base_url,
+                               data=data_person, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED, '2 status')
+        self.assertEquals(response.data, {'id': person_in_db['id']}, '2 data')
 
-        response = client.get(path=self.base_url, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_200_OK, "3 status")
-        self.assertEquals(response.data, people_in_db, "3 data")
+        # GET People
+        response = client.get(path=self.base_url,
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_200_OK, '3 status')
+        self.assertEquals(response.data, [person_in_db], '3 data')
 
-        response = client.get(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_200_OK, "4 status")
-        self.assertEquals(response.data, people_in_db[id_created-1], "4 data")
+        # GET Person
+        response = client.get(path=self.base_url + str(person_in_db['id']) + '/',
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_200_OK, '4 status')
+        self.assertEquals(response.data, person_in_db, '4 data')
 
-        people[id_created-1]['first_name'] += '_another'
-        people[id_created-1]['last_name'] += '_another'
-        response = client.put(path=self.base_url + str(id_created) + '/', data=people[id_created-1], content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_200_OK, "5 status")
-        self.assertEquals(response.data, None, "5 data")
-        people_in_db[id_created-1]['first_name'] = people[id_created-1]['first_name']
-        people_in_db[id_created-1]['last_name'] = people[id_created-1]['last_name']
+        # PUT
+        data_person['first_name'] += '_another'
+        data_person['last_name'] += '_another'
+        person_in_db['first_name'] = data_person['first_name']
+        person_in_db['last_name'] = data_person['last_name']
+        response = client.put(path=self.base_url + str(person_in_db['id']) + '/',
+                              data=data_person, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_200_OK, '5 status')
+        self.assertEquals(response.data, None, '5 data')
 
-        response = client.get(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_200_OK, "6 status")
-        self.assertEquals(response.data, people_in_db[id_created-1], "6 data")
+        # GET Person
+        response = client.get(path=self.base_url + str(person_in_db['id']) + '/',
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_200_OK, '6 status')
+        self.assertEquals(response.data, person_in_db, '6 data')
 
-        del people[id_created-1]
-        response = client.delete(path=self.base_url + str(id_created) + '/', content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT, "7 status")
-        self.assertEquals(response.data, None, "7 data")
-        del people_in_db[id_created-1]
+        # DELETE
+        response = client.delete(path=self.base_url + str(person_in_db['id']) + '/',
+                                 content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT, '7 status')
+        self.assertEquals(response.data, None, '7 data')
 
-        response = client.get(path=self.base_url, content_type=self.content_type, HTTP_ACCEPT=self.content_type)
-        self.assertEquals(response.status_code, status.HTTP_200_OK, "8 status")
-        self.assertEquals(response.data, people_in_db, "8 data")
+        # GET People
+        response = client.get(path=self.base_url,
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.status_code, status.HTTP_200_OK, '8 status')
+        self.assertEquals(response.data, [], '8 data')
+
+    # ----- Indexing Test -----
+
+        # WORSE
+        self.model.objects.create(first_name='first_name_0', last_name='last_name_0')
+        self.model.objects.create(first_name='first_name_1', last_name='last_name_1')
+
+        # BETTER
+        self.model.objects.bulk_create([
+            self.model(first_name='first_name_2', last_name='last_name_2'),
+            self.model(first_name='first_name_3', last_name='last_name_3')
+        ])
+
+        person_expected = {
+            'id': 4,
+            'first_name': 'first_name_2',
+            'last_name': 'last_name_2',
+        }
+
+        response = client.get(path=self.base_url + '?first_name=' + person_expected['first_name'],
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.data, [person_expected], 'first_name')
+
+        response = client.get(path=self.base_url + '?last_name=' + person_expected['last_name'],
+                              content_type=self.content_type, HTTP_ACCEPT=self.content_type)
+        self.assertEquals(response.data, [person_expected], 'last_name')
